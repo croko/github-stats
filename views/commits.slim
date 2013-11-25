@@ -1,0 +1,23 @@
+/= @commits.next_page
+/= @commits.prev_page
+
+table.table.table-condensed.table-striped
+  thead
+    tr
+      th Date
+      th User
+      th Message
+  - @commits.each do |commit|
+    tr
+      td= Time.parse(commit.commit.author.date).utc
+      td= commit.commit.author.name
+      td= commit.commit.message
+ul.pagination
+  li
+    a href = "/commits?#{@first_page}" First
+  li
+    a href = "/commits?#{@prev_page}" Prev
+  li
+    a href = "/commits?#{@next_page}" Next
+  li
+    a href = "/commits?#{@last_page}" Last

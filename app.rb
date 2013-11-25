@@ -76,4 +76,29 @@ get '/comments' do
   slim :comments
 end
 
+get '/commits' do
+  @commits = github.repos.commits.list #(page: params[:page])
 
+  #@first_page = URI.parse(@commits.links.first).query if @commits.links.first
+  #@next_page = URI.parse(@commits.links.next).query if @commits.links.next
+  #@prev_page = URI.parse(@commits.links.prev).query if @commits.links.prev
+  #@last_page = URI.parse(@commits.links.last).query if @commits.links.last
+
+  slim :commits
+end
+
+get '/active_users' do
+  @commits = github.repos.commits.list(since: Time.now.localtime - 1.hour)
+  @commiters = []
+  @commiters_all = []
+
+  @commits.to_a.each do |c|
+    @commiters_all << {'author' => c.commit.author.name}
+  end
+
+  @commiters_all.uniq.each do |c|
+    @commiters << {'author' => c['author'], 'commits' => @commiters_all.count(c)}
+  end
+  @commiters = @commiters.sort_by { |d| d['commits'] }.reverse
+  slim :active_users
+end
