@@ -32,8 +32,17 @@ get "/" do
 end
 
 get "/commit_activity" do
-  @commits = github.repos.stats.commit_activity(user: 'rails', repo: 'rails')
+  @commits = github.repos.stats.commit_activity
   slim :commit_activity
+end
+
+get '/pulls' do
+  @pulls = github.pull_requests.list(user: 'rails', repo: 'rails', page: params[:page])
+  @first_page = URI.parse(@pulls.links.first).query if @pulls.links.first
+  @next_page = URI.parse(@pulls.links.next).query if @pulls.links.next
+  @prev_page = URI.parse(@pulls.links.prev).query if @pulls.links.prev
+  @last_page = URI.parse(@pulls.links.last).query if @pulls.links.last
+  slim :pulls
 end
 
 
