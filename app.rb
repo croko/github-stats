@@ -37,7 +37,7 @@ get "/commit_activity" do
 end
 
 get '/pulls' do
-  @pulls = github.pull_requests.list(user: 'rails', repo: 'rails', page: params[:page])
+  @pulls = github.pull_requests.list(page: params[:page])
   @first_page = URI.parse(@pulls.links.first).query if @pulls.links.first
   @next_page = URI.parse(@pulls.links.next).query if @pulls.links.next
   @prev_page = URI.parse(@pulls.links.prev).query if @pulls.links.prev
@@ -45,18 +45,18 @@ get '/pulls' do
   slim :pulls
 end
 
-get '/comments' do
-  @comments = github.pull_requests.comments.list(user: 'rails', repo: 'rails', page: params[:page])
+get '/reviews' do
+  @comments = github.pull_requests.comments.list(page: params[:page])
 
   @first_page = URI.parse(@comments.links.first).query if @comments.links.first
   @next_page = URI.parse(@comments.links.next).query if @comments.links.next
   @prev_page = URI.parse(@comments.links.prev).query if @comments.links.prev
   @last_page = URI.parse(@comments.links.last).query if @comments.links.last
-  slim :comments
+  slim :reviews
 end
 
 get '/issues' do
-  @issues = github.activity.events.issue(user: 'rails', repo: 'rails', page: params[:page])
+  @issues = github.activity.events.issue(page: params[:page])
   @first_page = URI.parse(@issues.links.first).query if @issues.links.first
   @next_page = URI.parse(@issues.links.next).query if @issues.links.next
   @prev_page = URI.parse(@issues.links.prev).query if @issues.links.prev
@@ -64,4 +64,16 @@ get '/issues' do
 
   slim :issues
 end
+
+get '/comments' do
+  @comments = github.issues.comments.list(page: params[:page])
+
+  @first_page = URI.parse(@comments.links.first).query if @comments.links.first
+  @next_page = URI.parse(@comments.links.next).query if @comments.links.next
+  @prev_page = URI.parse(@comments.links.prev).query if @comments.links.prev
+  @last_page = URI.parse(@comments.links.last).query if @comments.links.last
+
+  slim :comments
+end
+
 

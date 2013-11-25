@@ -3,7 +3,7 @@ table.table.table-condensed.table-striped
     tr
       th Date
       th User
-      th Issue Comment
+      th Review Comment
   - @comments.each do |comment|
     tr
       td= Time.parse(comment.created_at).utc

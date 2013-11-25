@@ -9,6 +9,8 @@ table.table.table-condensed.table-striped
       td= Time.parse(pull.created_at).utc
       td= pull.user.login
       td= pull.title
+      td
+        a href = "/review?number=#{pull.number}" Pull Reviews
 ul.pagination
   li
     a href = "/pulls?#{@first_page}" First
