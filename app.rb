@@ -3,7 +3,7 @@ require 'sinatra/activerecord'
 require 'sinatra/reloader'
 require 'slim'
 require 'github_api'
-require 'sinatra/twitter-bootstrap'
+require 'v8'
 
 set :slim, pretty: true
 
@@ -22,4 +22,13 @@ github = Github.new do |config|
   config.repo = 'rails'
   config.user = 'rails'
 end
+
+get '/application.js' do
+  coffee :script
+end
+
+get "/" do
+  slim :index
+end
+
 
