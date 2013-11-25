@@ -31,4 +31,9 @@ get "/" do
   slim :index
 end
 
+get "/commit_activity" do
+  @commits = github.repos.stats.commit_activity(user: 'rails', repo: 'rails')
+  slim :commit_activity
+end
+
 
