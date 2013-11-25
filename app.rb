@@ -102,3 +102,19 @@ get '/active_users' do
   @commiters = @commiters.sort_by { |d| d['commits'] }.reverse
   slim :active_users
 end
+
+get '/last_day_active_users' do
+  @commits = github.repos.commits.list(since: Date.today.beginning_of_day)
+  @commiters = []
+  @commiters_all = []
+
+  @commits.to_a.each do |c|
+    @commiters_all << {'author' => c.commit.author.name}
+  end
+
+  @commiters_all.uniq.each do |c|
+    @commiters << {'author' => c['author'], 'commits' => @commiters_all.count(c)}
+  end
+  @commiters = @commiters.sort_by { |d| d['commits'] }.reverse
+  slim :active_users
+end
