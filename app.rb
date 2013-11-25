@@ -45,4 +45,23 @@ get '/pulls' do
   slim :pulls
 end
 
+get '/comments' do
+  @comments = github.pull_requests.comments.list(user: 'rails', repo: 'rails', page: params[:page])
+
+  @first_page = URI.parse(@comments.links.first).query if @comments.links.first
+  @next_page = URI.parse(@comments.links.next).query if @comments.links.next
+  @prev_page = URI.parse(@comments.links.prev).query if @comments.links.prev
+  @last_page = URI.parse(@comments.links.last).query if @comments.links.last
+  slim :comments
+end
+
+get '/issues' do
+  @issues = github.activity.events.issue(user: 'rails', repo: 'rails', page: params[:page])
+  @first_page = URI.parse(@issues.links.first).query if @issues.links.first
+  @next_page = URI.parse(@issues.links.next).query if @issues.links.next
+  @prev_page = URI.parse(@issues.links.prev).query if @issues.links.prev
+  @last_page = URI.parse(@issues.links.last).query if @issues.links.last
+
+  slim :issues
+end
 
