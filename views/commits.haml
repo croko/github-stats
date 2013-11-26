@@ -1,0 +1,13 @@
+%h3 Commits
+
+%table.table.table-condensed.table-striped
+  %thead
+    %tr
+      %th Date
+      %th User
+      %th Message
+  - @commits.each do |commit|
+    %tr
+      %td= Time.parse(commit.commit.author.date).utc
+      %td= commit.commit.author.name
+      %td= commit.commit.message

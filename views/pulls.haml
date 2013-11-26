@@ -1,0 +1,23 @@
+%h3 Pull requests
+%table.table.table-condensed.table-striped
+  %thead
+    %tr
+      %th Date
+      %th User
+      %th Pull Title
+  - @pulls.each do |pull|
+    %tr
+      %td= Time.parse(pull.created_at).utc
+      %td= pull.user.login
+      %td= pull.title
+      %td
+        %a href = "/review?number=#{pull.number}" Pull Reviews
+%ul.pagination
+  %li
+    %a{href: "/pulls?#{@first_page}"} First
+  %li
+    %a{href: "/pulls?#{@prev_page}"} Prev
+  %li
+    %a{href: "/pulls?#{@next_page}"} Next
+  %li
+    %a{href: "/pulls?#{@last_page}"} Last

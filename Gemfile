@@ -5,10 +5,7 @@ gem 'sinatra-contrib'
 gem 'sinatra-activerecord'
 gem 'json'
 gem 'pg'
-gem 'slim'
 gem 'github_api'
-gem 'coffee-script'
-gem 'therubyracer'
 
 group :test do
   gem 'rspec'

@@ -1,0 +1,22 @@
+%h3 Reviews
+%table.table.table-condensed.table-striped
+  %thead
+    %tr
+      %th Date
+      %th User
+      %th Title
+  - @issues.each do |issue|
+    %tr
+      %td= Time.parse(issue.created_at).utc
+      %td= issue.actor.login
+      %td= issue.issue.title
+
+%ul.pagination
+  %li
+    %a{href: "/issues?#{@first_page}"} First
+  %li
+    %a{href: "/issues?#{@prev_page}"} Prev
+  %li
+    %a{href: "/issues?#{@next_page}"} Next
+  %li
+    %a{href: "/issues?#{@last_page}"} Last

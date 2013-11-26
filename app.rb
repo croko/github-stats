@@ -1,11 +1,7 @@
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/reloader'
-require 'slim'
 require 'github_api'
-require 'v8'
-
-set :slim, pretty: true
 
 db = URI.parse('postgres://gennady@localhost/github')
 
@@ -23,17 +19,22 @@ github = Github.new do |config|
   config.user = 'rails'
 end
 
-get '/application.js' do
-  coffee :script
-end
-
 get "/" do
-  slim :index
+  haml :index
 end
 
 get "/commit_activity" do
   @commits = github.repos.stats.commit_activity
-  slim :commit_activity
+
+  @data = []
+  @commits.each do |commit|
+    @data << {date: Time.at(commit.week).utc, commits: commit.total}
+  end
+
+  @data = @data.to_json
+
+  haml :commit_activity
+
 end
 
 get '/pulls' do
@@ -42,7 +43,7 @@ get '/pulls' do
   @next_page = URI.parse(@pulls.links.next).query if @pulls.links.next
   @prev_page = URI.parse(@pulls.links.prev).query if @pulls.links.prev
   @last_page = URI.parse(@pulls.links.last).query if @pulls.links.last
-  slim :pulls
+  haml :pulls
 end
 
 get '/reviews' do
@@ -52,7 +53,7 @@ get '/reviews' do
   @next_page = URI.parse(@comments.links.next).query if @comments.links.next
   @prev_page = URI.parse(@comments.links.prev).query if @comments.links.prev
   @last_page = URI.parse(@comments.links.last).query if @comments.links.last
-  slim :reviews
+  haml :reviews
 end
 
 get '/issues' do
@@ -62,7 +63,7 @@ get '/issues' do
   @prev_page = URI.parse(@issues.links.prev).query if @issues.links.prev
   @last_page = URI.parse(@issues.links.last).query if @issues.links.last
 
-  slim :issues
+  haml :issues
 end
 
 get '/comments' do
@@ -73,18 +74,13 @@ get '/comments' do
   @prev_page = URI.parse(@comments.links.prev).query if @comments.links.prev
   @last_page = URI.parse(@comments.links.last).query if @comments.links.last
 
-  slim :comments
+  haml :comments
 end
 
 get '/commits' do
-  @commits = github.repos.commits.list #(page: params[:page])
-
-  #@first_page = URI.parse(@commits.links.first).query if @commits.links.first
-  #@next_page = URI.parse(@commits.links.next).query if @commits.links.next
-  #@prev_page = URI.parse(@commits.links.prev).query if @commits.links.prev
-  #@last_page = URI.parse(@commits.links.last).query if @commits.links.last
-
-  slim :commits
+  #was chosen small repo to avoid exceeding the rate limit
+  @commits = github.repos.commits.list(user: 'ryanb', repo: 'letter_opener', auto_pagination: true)
+  haml :commits
 end
 
 get '/active_users' do
@@ -100,7 +96,7 @@ get '/active_users' do
     @commiters << {'author' => c['author'], 'commits' => @commiters_all.count(c)}
   end
   @commiters = @commiters.sort_by { |d| d['commits'] }.reverse
-  slim :active_users
+  haml :active_users
 end
 
 get '/last_day_active_users' do
@@ -116,5 +112,6 @@ get '/last_day_active_users' do
     @commiters << {'author' => c['author'], 'commits' => @commiters_all.count(c)}
   end
   @commiters = @commiters.sort_by { |d| d['commits'] }.reverse
-  slim :active_users
+  haml :last_day_active_users
 end
+

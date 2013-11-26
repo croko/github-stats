@@ -1,0 +1,21 @@
+%h3 Issues Comments
+%table.table.table-condensed.table-striped
+  %thead
+    %tr
+      %th Date
+      %th User
+      %th Issue Comment
+  - @comments.each do |comment|
+    %tr
+      %td= Time.parse(comment.created_at).utc
+      %td= comment.user.login
+      %td= comment.body
+%ul.pagination
+  %li
+    %a{href: "/comments?#{@first_page}"} First
+  %li
+    %a{href: "/comments?#{@prev_page}"} Prev
+  %li
+    %a{href: "/comments?#{@next_page}"} Next
+  %li
+    %a{href: "/comments?#{@last_page}"} Last
