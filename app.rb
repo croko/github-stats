@@ -72,7 +72,7 @@ get '/commits' do
 end
 
 get '/active_users' do
-  @commits = github.repos.commits.list(since: Time.now.localtime - 1.hour)
+  @commits = github.repos.commits.list(since: Time.now.localtime - 3600)
   @commiters = []
   @commiters_all = []
 
@@ -88,7 +88,7 @@ get '/active_users' do
 end
 
 get '/last_day_active_users' do
-  @commits = github.repos.commits.list(since: Date.today.beginning_of_day)
+  @commits = github.repos.commits.list(since: Date.today.to_datetime)
   @commiters = []
   @commiters_all = []
 
